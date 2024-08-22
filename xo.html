@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image:url(download.jpg);
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+    margin-bottom: 20px;
+    padding-right: 100px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background-color;
+    border : 2px solid #000;
+    font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.cell:hover {
+    background-color: #f5ef9f;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+    <h1 style="color: aliceblue;">Tic-Tac-Toe</h1>
+    <div class="game-board">
+        <button class="cell" data-index="0"></button>
+        <button class="cell" data-index="1"></button>
+        <button class="cell" data-index="2"></button>
+        <button class="cell" data-index="3"></button>
+        <button class="cell" data-index="4"></button>
+        <button class="cell" data-index="5"></button>
+        <button class="cell" data-index="6"></button>
+        <button class="cell" data-index="7"></button>
+        <button class="cell" data-index="8"></button>
+    </div>
+    <button id="reset">Reset Game</button>
+    <script>
+        const cells = document.querySelectorAll('.cell');
+const resetButton = document.getElementById('reset');
+let currentPlayer = 'X';
+let gameBoard = Array(9).fill(null);
+
+const checkWinner = () => {
+    const winPatterns = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+
+    for (const pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+            return gameBoard[a];
+        }
+    }
+    return null;
+};
+
+const handleClick = (event) => {
+    const index = event.target.dataset.index;
+    if (!gameBoard[index] && !checkWinner()) {
+        gameBoard[index] = currentPlayer;
+        event.target.textContent = currentPlayer;
+        const winner = checkWinner();
+        if (winner) {
+            setTimeout(() => {
+                alert(`${winner} is winner!`);
+                disableBoard();
+            }, 10);
+        } else if (!gameBoard.includes(null)) {
+            setTimeout(() => alert("It's  Draw!"), 10);
+        }
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    }
+};
+
+const disableBoard = () => {
+    cells.forEach(cell => cell.removeEventListener('click', handleClick));
+};
+
+const resetGame = () => {
+    gameBoard = Array(9).fill(null);
+    cells.forEach(cell => {
+        cell.textContent = '';
+        cell.addEventListener('click', handleClick);
+    });
+    currentPlayer = 'X';
+};
+
+cells.forEach(cell => cell.addEventListener('click', handleClick));
+resetButton.addEventListener('click', resetGame);
+
+    </script>
+</body>
+</html>
